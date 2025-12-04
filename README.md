@@ -1,6 +1,10 @@
-# Onthefly wallet
-Onthefly wallet is a lightweight, open-source cryptocurrency wallet designed for ease of use and security.
-Instead of storing private keys locally, Onthefly wallet generates them on-the-fly when needed, enhancing security and reducing the risk of key theft.
+There are always 2 problems I face when I store my cryptocurrency in a wallet:
 
-## Features
-- **On-the-fly Key Generation**: Private keys are generated only when required, minimizing exposure to potential threats.
+- Hacker can attack my device and steal my private keys
+- I can lose my private keys and lose access to my funds forever
+
+This fun project aims to solve both problems.
+
+- Private keys are not stored on my device, but rather generated on the fly when needed.
+- Using custom mnemonic phrases that are easy to remember, I can always recover my private keys.
+
