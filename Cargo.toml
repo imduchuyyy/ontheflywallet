@@ -3,4 +3,9 @@ name = "ontheflywallet"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "otfwallet"
+path = "bin/main.rs"
+
 [dependencies]
+eyre = "0.6.12"
