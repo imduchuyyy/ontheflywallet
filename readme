@@ -8,3 +8,4 @@ This fun project aims to solve both problems.
 - Private keys are not stored on my device, but rather generated on the fly when needed.
 - Using custom mnemonic phrases that are easy to remember, I can always recover my private keys.
 
+I use this to study rust also. Enjoy!
