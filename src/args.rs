@@ -1,12 +1,11 @@
 use crate::dispatcher::Dispatcher;
-use clap::Parser;
 use eyre::Result;
 use rustyline::DefaultEditor as Editor;
 use yansi::Paint;
 
 pub fn run() -> Result<()> {
     // let args = OnTheFlyWallet::parse();
-    let mut dispatcher = Dispatcher::new();
+    let dispatcher = Dispatcher::new();
 
     let mut rl = Editor::new()?;
     println!(

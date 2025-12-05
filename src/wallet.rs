@@ -12,3 +12,9 @@ impl Wallet {
         self.seeds = Some(seeds);
     }
 }
+
+impl Default for Wallet {
+    fn default() -> Self {
+        Self::new()
+    }
+}

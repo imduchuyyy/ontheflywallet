@@ -23,3 +23,9 @@ impl Dispatcher {
         self.wallet.set_seeds(seeds);
     }
 }
+
+impl Default for Dispatcher {
+    fn default() -> Self {
+        Self::new()
+    }
+}
