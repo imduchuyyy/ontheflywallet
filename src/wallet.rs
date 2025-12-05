@@ -52,6 +52,7 @@ impl Default for Wallet {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use alloy::primitives::address;
 
     #[test]
     fn test_wallet_set_seeds() {
