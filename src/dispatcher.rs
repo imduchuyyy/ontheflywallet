@@ -1,93 +1,48 @@
-use crate::wallet::Wallet;
-use crate::cmd::Command;
+use crate::{
+    wallet::Wallet,
+    cmd::{
+        address::AddressTrait,
+        login::LoginTrait,
+    }
+};
+use alloy::primitives::Address;
 use yansi::Paint;
-
-#[derive(Debug)]
-pub enum DispatcherState {
-    Idle,
-    AwaitingSeeds,
-}
+use clap::Parser;
 
 #[derive(Debug)]
 pub struct Dispatcher {
-    state: DispatcherState,
-    wallet: Wallet,
+    pub wallet: Wallet,
 }
 
 impl Dispatcher {
     pub fn new() -> Self {
         Dispatcher {
-            state: DispatcherState::Idle,
             wallet: Wallet::new(),
         }
     }
 
     pub fn prompt(&self) -> String {
-        match &self.state {
-            DispatcherState::Idle => "➜ ".green().to_string(),
-            DispatcherState::AwaitingSeeds => "Enter wallet seeds: ".yellow().to_string(),
-        }
+        "➜ ".green().to_string()
     }
 
     pub async fn dispatch(&mut self, input: &str) -> Result<bool, String> {
-        // this could be main command or parameters for commands
-        return match self.state {
-            DispatcherState::Idle => self.handle_idle_input(input).await,
-            DispatcherState::AwaitingSeeds => {
-                self.login(input.to_string()).unwrap();
-                self.state = DispatcherState::Idle;
-                Ok(false)
-            }
-        }
-    }
-
-    async fn handle_idle_input(&mut self, input: &str) -> Result<bool, String> {
         return match Command::parse(input) {
             Ok(cmd) => match cmd {
                 Command::Quit => Ok(true),
                 Command::Help => self.help(),
-                Command::Login => {
-                    self.state = DispatcherState::AwaitingSeeds;
-                    Ok(false)
-                }
-                Command::Address => self.get_wallet_address(),
+                Command::Login { seeds } => self.login(seeds),
+                Command::Address => self.print_wallet_address(),
             },
             Err(e) => Err(format!("Failed to parse command: {}", e)),
         }
     }
-}
 
-impl Dispatcher {
     fn help (&self) -> eyre::Result<bool, String> {
         println!("Available commands:");
         println!("  {} - Show this help message", "help".green());
         println!("  {} - Quit the REPL", "quit".green());
         println!("  {} - Login to the wallet", "login".green());
         println!("  {} - Get wallet address", "address".green());
-        Ok(false)
-    }
-
-    fn login(&mut self, seeds: String) -> eyre::Result<bool, String> {
-        match self.wallet.login(seeds) {
-            Ok(address) => {
-                println!("{}: Wallet Address: {:?}", "Success".green(), address);
-            }
-            Err(e) => {
-                println!("{}: Failed to login: {}", "Err".red(), e);
-            }
-        }
-        Ok(false)
-    }
-
-    fn get_wallet_address(&self) -> eyre::Result<bool, String> {
-        match self.wallet.get_address() {
-            Ok(address) => {
-                println!("{}: Wallet Address: {:?}", "Success".green(), address);
-            }
-            Err(e) => {
-                println!("{}: Failed to get wallet address: {}", "Err".red(), e);
-            }
-        }
         Ok(false)
     }
 }
@@ -97,3 +52,37 @@ impl Default for Dispatcher {
         Self::new()
     }
 }
+
+// Wallet REPL commands.
+#[derive(Debug, Parser)]
+#[command(disable_help_flag = true, disable_help_subcommand = true)]
+pub enum Command {
+    #[command(visible_alias = "h")]
+    Help,
+
+    /// Quit the REPL.
+    #[command(visible_alias = "q")]
+    Quit,
+
+    /// Login to the wallet
+    #[command(visible_alias = "lg")]
+    Login {
+        /// Wallet seeds
+        seeds: String,
+    },
+
+    /// Get Address
+    #[command(visible_alias = "add")]
+    Address,
+}
+
+impl Command {
+    pub fn parse(input: &str) -> eyre::Result<Self> {
+        let args = input.split_whitespace();
+        let args = std::iter::once("otfwallet").chain(args);
+        Self::try_parse_from(args)
+            .map_err(|e| eyre::eyre!("{}; for more information, see `help`", e.kind()))
+    }
+}
+
+

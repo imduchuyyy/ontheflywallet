@@ -2,7 +2,12 @@ use alloy::{
     primitives::{
         eip191_hash_message,
         keccak256,
-        Address
+        Address,
+        address
+    },
+    providers::{
+        Provider,
+        ProviderBuilder
     },
     signers::{
         local::PrivateKeySigner,
@@ -15,12 +20,16 @@ use yansi::Paint;
 #[derive(Debug, Clone)]
 pub struct Wallet {
     signer: Option<PrivateKeySigner>,
+    provider: dyn Provider
 }
 
 impl Wallet {
     pub fn new() -> Self {
+        let rpc_url = "https://reth-ethereum.ithaca.xyz/rpc".parse().unwrap();
+
         Wallet { 
-            signer: None
+            signer: None,
+            provider: ProviderBuilder::new().connect_http(rpc_url)
         }
     }
 
@@ -63,6 +72,6 @@ mod tests {
         wallet.login(seeds.clone()).unwrap();
 
         let address = wallet.get_address().unwrap();
-        println!("Derived address: {:?}", address);
+        assert_eq!(address, address!("0x56d67386939607c11bd60bb009eb02f4dd29c318"));
     }
 }
