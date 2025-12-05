@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{address::AddressTrait, login::LoginTrait},
+    cmd::{address::AddressTrait, login::LoginTrait, clear::ClearTrait},
     wallet::Wallet,
 };
 use clap::Parser;
@@ -22,12 +22,16 @@ impl Dispatcher {
     }
 
     pub async fn dispatch(&mut self, input: &str) -> Result<bool, String> {
+        if input.trim().is_empty() {
+            return Ok(false);
+        }
         match Command::parse(input) {
             Ok(cmd) => match cmd {
                 Command::Quit => Ok(true),
                 Command::Help => self.help(),
                 Command::Login { seeds } => self.login(seeds),
                 Command::Address => self.print_wallet_address(),
+                Command::Clear => self.clear(),
             },
             Err(e) => Err(format!("Failed to parse command: {}", e)),
         }
@@ -39,6 +43,7 @@ impl Dispatcher {
         println!("  {} - Quit the REPL", "quit".green());
         println!("  {} - Login to the wallet", "login".green());
         println!("  {} - Get wallet address", "address".green());
+        println!("  {} - Clear the screen", "clear".green());
 
         Ok(false)
     }
@@ -71,6 +76,10 @@ pub enum Command {
     /// Get Address
     #[command(visible_alias = "add")]
     Address,
+
+    /// Clear the screen
+    #[command()]
+    Clear,
 }
 
 impl Command {
