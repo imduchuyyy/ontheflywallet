@@ -1,21 +1,19 @@
 use alloy::{
-    hex,
-    primitives::{Address, eip191_hash_message},
-    signers::local::PrivateKeySigner,
+    consensus::{TransactionEnvelope, TxEnvelope}, hex, primitives::{Address, eip191_hash_message}, providers::{Provider, ProviderBuilder}, rpc::types::{TransactionReceipt, TransactionRequest}, signers::local::PrivateKeySigner
 };
 use yansi::Paint;
 
 #[derive(Debug, Clone)]
 pub struct Wallet {
     signer: Option<PrivateKeySigner>,
-    // rpc_url: String,
+    rpc_url: String,
 }
 
 impl Wallet {
     pub fn new() -> Self {
         Wallet {
             signer: None,
-            // rpc_url: "https://reth-ethereum.ithaca.xyz/rpc".to_string(),
+            rpc_url: "https://reth-ethereum.ithaca.xyz/rpc".to_string(),
         }
     }
 
@@ -40,6 +38,19 @@ impl Wallet {
             "Wallet not logged in, call `{}` first",
             "login".green()
         ))
+    }
+
+    pub async fn send_transaction(&self, tx: TransactionRequest) -> eyre::Result<TransactionReceipt> {
+        if let Some(signer) = &self.signer {
+            let provider = ProviderBuilder::new().wallet(signer.clone()).connect_http(self.rpc_url.parse().unwrap());
+            let pending_tx = provider.send_transaction(tx).await?;
+            pending_tx.get_receipt().await.map_err(|e| eyre::eyre!(e))
+        } else {
+            Err(eyre::eyre!(
+                "Wallet not logged in, call `{}` first",
+                "login".green()
+            ))
+        }
     }
 }
 
