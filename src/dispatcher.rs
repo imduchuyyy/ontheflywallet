@@ -34,7 +34,7 @@ impl Dispatcher {
                 Command::Address => self.print_wallet_address(),
                 Command::Clear => self.clear(),
             },
-            Err(e) => Err(format!("Command not found: {}", input.red())),
+            Err(_) => Err(format!("Command not found: {}", input.red())),
         }
     }
 
