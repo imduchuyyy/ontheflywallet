@@ -1,5 +1,5 @@
-use yansi::Paint;
 use crate::wallet::Wallet;
+use yansi::Paint;
 
 const DEFAULT_PROMPT: &str = "➜ ";
 
@@ -23,4 +23,3 @@ impl Dispatcher {
         self.wallet.set_seeds(seeds);
     }
 }
-

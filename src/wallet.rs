@@ -1,4 +1,3 @@
-
 #[derive(Debug, Clone)]
 pub struct Wallet {
     seeds: Option<String>,
