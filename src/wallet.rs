@@ -40,7 +40,7 @@ impl Wallet {
         ))
     }
 
-    pub async fn send_transaction(&self, tx: TransactionRequest) -> eyre::Result<TransactionReceipt> {
+    pub async fn sign_and_send_transaction(&self, tx: TransactionRequest) -> eyre::Result<TransactionReceipt> {
         if let Some(signer) = &self.signer {
             let provider = ProviderBuilder::new().wallet(signer.clone()).connect_http(self.rpc_url.parse().unwrap());
             let pending_tx = provider.send_transaction(tx).await?;
