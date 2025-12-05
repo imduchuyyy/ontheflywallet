@@ -16,4 +16,3 @@ impl AddressTrait for Dispatcher {
         }
     }
 }
-

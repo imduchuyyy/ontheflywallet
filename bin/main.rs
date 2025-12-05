@@ -1,6 +1,6 @@
 use eyre::Result;
-use rustyline::DefaultEditor as Editor;
 use ontheflywallet::dispatcher::Dispatcher;
+use rustyline::DefaultEditor as Editor;
 use yansi::Paint;
 
 #[tokio::main]

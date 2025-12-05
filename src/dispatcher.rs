@@ -1,13 +1,9 @@
 use crate::{
+    cmd::{address::AddressTrait, login::LoginTrait},
     wallet::Wallet,
-    cmd::{
-        address::AddressTrait,
-        login::LoginTrait,
-    }
 };
-use alloy::primitives::Address;
-use yansi::Paint;
 use clap::Parser;
+use yansi::Paint;
 
 #[derive(Debug)]
 pub struct Dispatcher {
@@ -26,7 +22,7 @@ impl Dispatcher {
     }
 
     pub async fn dispatch(&mut self, input: &str) -> Result<bool, String> {
-        return match Command::parse(input) {
+        match Command::parse(input) {
             Ok(cmd) => match cmd {
                 Command::Quit => Ok(true),
                 Command::Help => self.help(),
@@ -37,12 +33,13 @@ impl Dispatcher {
         }
     }
 
-    fn help (&self) -> eyre::Result<bool, String> {
+    fn help(&self) -> eyre::Result<bool, String> {
         println!("Available commands:");
         println!("  {} - Show this help message", "help".green());
         println!("  {} - Quit the REPL", "quit".green());
         println!("  {} - Login to the wallet", "login".green());
         println!("  {} - Get wallet address", "address".green());
+
         Ok(false)
     }
 }
@@ -84,5 +81,3 @@ impl Command {
             .map_err(|e| eyre::eyre!("{}; for more information, see `help`", e.kind()))
     }
 }
-
-
