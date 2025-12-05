@@ -1,4 +1,4 @@
-use crate::{dispatcher::Dispatcher, opts::OnTheFlyWallet};
+use crate::dispatcher::Dispatcher;
 use clap::Parser;
 use eyre::Result;
 use rustyline::DefaultEditor as Editor;
@@ -17,13 +17,7 @@ pub fn run() -> Result<()> {
         let readline = rl.readline(&dispatcher.prompt());
         match readline {
             Ok(line) => {
-                let args = OnTheFlyWallet::parse_from(line.split_whitespace());
-                match args.cmd {
-                    Some(cmd) => match cmd {
-                        crate::cmd::Command::Quit => break,
-                    },
-                    None => continue,
-                }
+                println!("{}", line);
             }
             Err(_) => break,
         }
