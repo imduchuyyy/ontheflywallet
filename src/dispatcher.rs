@@ -2,7 +2,8 @@ use crate::{
     cmd::{address::AddressTrait, login::LoginTrait, clear::ClearTrait},
     wallet::Wallet,
 };
-use clap::Parser;
+use clap::{CommandFactory, Parser};
+use itertools::Itertools;
 use yansi::Paint;
 
 #[derive(Debug)]
@@ -38,12 +39,21 @@ impl Dispatcher {
     }
 
     fn help(&self) -> eyre::Result<bool, String> {
-        println!("Available commands:");
-        println!("  {} - Show this help message", "help".green());
-        println!("  {} - Quit the REPL", "quit".green());
-        println!("  {} - Login to the wallet", "login".green());
-        println!("  {} - Get wallet address", "address".green());
-        println!("  {} - Clear the screen", "clear".green());
+        println!(
+            "{}",
+            Paint::blue("Available commands:\n")
+        );
+        println!(
+            "{}",
+            Command::command()
+                .get_subcommands()
+                .map(|sc| {
+                    let name = sc.get_name();
+                    let usage = sc.get_about().unwrap_or_default();
+                    format!("  {:<10} {}", name.green(), usage)
+                })
+                .join("\n")
+        );
 
         Ok(false)
     }

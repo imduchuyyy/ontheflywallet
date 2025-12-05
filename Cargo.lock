@@ -2690,6 +2690,7 @@ dependencies = [
  "clap",
  "clearscreen",
  "eyre",
+ "itertools 0.14.0",
  "rustyline",
  "tokio",
  "yansi",
