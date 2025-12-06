@@ -39,6 +39,10 @@ impl Wallet {
             "login".green()
         ))
     }
+
+    pub fn set_rpc_url(&mut self, url: String) {
+        self.rpc_url = url;
+    }
     
     pub async fn sign_and_send_transaction(&self, tx: TransactionRequest) -> eyre::Result<TransactionReceipt> {
         if let Some(signer) = &self.signer {
