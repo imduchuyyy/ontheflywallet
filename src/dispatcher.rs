@@ -1,8 +1,9 @@
 use crate::{
-    cmd::{address::AddressTrait, login::LoginTrait},
+    cmd::{address::AddressTrait, login::LoginTrait, clear::ClearTrait},
     wallet::Wallet,
 };
-use clap::Parser;
+use clap::{CommandFactory, Parser};
+use itertools::Itertools;
 use yansi::Paint;
 
 #[derive(Debug)]
@@ -22,23 +23,37 @@ impl Dispatcher {
     }
 
     pub async fn dispatch(&mut self, input: &str) -> Result<bool, String> {
+        if input.trim().is_empty() {
+            return Ok(false);
+        }
         match Command::parse(input) {
             Ok(cmd) => match cmd {
                 Command::Quit => Ok(true),
                 Command::Help => self.help(),
                 Command::Login { seeds } => self.login(seeds),
                 Command::Address => self.print_wallet_address(),
+                Command::Clear => self.clear(),
             },
-            Err(e) => Err(format!("Failed to parse command: {}", e)),
+            Err(_) => Err(format!("Command not found: {}", input.red())),
         }
     }
 
     fn help(&self) -> eyre::Result<bool, String> {
-        println!("Available commands:");
-        println!("  {} - Show this help message", "help".green());
-        println!("  {} - Quit the REPL", "quit".green());
-        println!("  {} - Login to the wallet", "login".green());
-        println!("  {} - Get wallet address", "address".green());
+        println!(
+            "{}",
+            Paint::blue("Available commands:\n")
+        );
+        println!(
+            "{}",
+            Command::command()
+                .get_subcommands()
+                .map(|sc| {
+                    let name = sc.get_name();
+                    let usage = sc.get_about().unwrap_or_default();
+                    format!("  {:<10} {}", name.green(), usage)
+                })
+                .join("\n")
+        );
 
         Ok(false)
     }
@@ -71,6 +86,10 @@ pub enum Command {
     /// Get Address
     #[command(visible_alias = "add")]
     Address,
+
+    /// Clear the screen
+    #[command()]
+    Clear,
 }
 
 impl Command {
