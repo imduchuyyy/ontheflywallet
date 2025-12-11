@@ -13,6 +13,7 @@ clap = { version = "4.5.53", features = ["derive"] }
 clearscreen = "4.0.2"
 eyre = "0.6.12"
 itertools = "0.14.0"
+rpassword = "7.4.0"
 rustyline = "17.0.2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 yansi = "1.0.1"

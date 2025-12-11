@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{address::AddressTrait, login::LoginTrait, clear::ClearTrait},
+    cmd::{address::AddressTrait, login::LoginTrait, clear::ClearTrait, transfer::TransferTrait},
     wallet::Wallet,
 };
 use clap::{CommandFactory, Parser};
@@ -33,6 +33,7 @@ impl Dispatcher {
                 Command::Login { seeds } => self.login(seeds),
                 Command::Address => self.print_wallet_address(),
                 Command::Clear => self.clear(),
+                Command::Transfer { token, to, amount } => self.transfer(token, to, amount).await,
             },
             Err(_) => Err(format!("Command not found: {}", input.red())),
         }
@@ -90,6 +91,17 @@ pub enum Command {
     /// Clear the screen
     #[command()]
     Clear,
+
+    /// Transfer
+    #[command(visible_alias = "tr")]
+    Transfer {
+        /// Token
+        token: String,
+        /// To
+        to: String,
+        /// Amount
+        amount: String,
+    },
 }
 
 impl Command {
