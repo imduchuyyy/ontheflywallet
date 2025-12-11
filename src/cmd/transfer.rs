@@ -27,7 +27,11 @@ impl TransferTrait for Dispatcher {
         to: String,
         amount: String,
     ) -> eyre::Result<bool, String> {
-        let token_address: Address = Address::from_str(&token).unwrap();
+        let token_address: Address = if token == "eth" {
+            Address::ZERO
+        } else {
+            Address::from_str(&token).unwrap()
+        };
         let to_address: Address = Address::from_str(&to).unwrap();
         self.wallet.transfer_token(token_address, to_address, amount).await.map_err(|e| e.to_string())?;
 

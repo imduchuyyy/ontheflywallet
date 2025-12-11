@@ -116,7 +116,7 @@ impl Wallet {
         token: Address,
         to: Address,
         amount: String,
-    ) -> eyre::Result<TransactionReceipt> {
+    ) -> eyre::Result<()> {
         let token_name = self.get_token_name(token).await?;
         let token_decimals = self.get_token_decimals(token).await?;
         let pu = parse_units(&amount, token_decimals)?;
@@ -133,6 +133,7 @@ impl Wallet {
 
         let signer = self.get_signer(password)?;
         let address = signer.address();
+        println!("From address: {}", address);
         let provider = self.provider_with_signer(signer);
 
         let balance = self.get_balance(token, address).await?;
@@ -143,14 +144,17 @@ impl Wallet {
         if token == Address::ZERO {
             let tx = TransactionRequest::default().with_to(to).with_value(amount);
             let pending_tx = provider.send_transaction(tx).await?;
-            pending_tx.get_receipt().await.map_err(|e| eyre::eyre!(e))
+            let tx_hash = pending_tx.tx_hash();
+            println!("Transaction sent with hash: {:?}", tx_hash);
+            Ok(())
         } else {
             let erc20 = ERC20::new(token, provider);
 
             let tx = erc20.transfer(to, amount);
-            println!("Transaction data: {:?}", tx);
             let pending_tx = tx.send().await.unwrap();
-            pending_tx.get_receipt().await.map_err(|e| eyre::eyre!(e))
+            let tx_hash = pending_tx.tx_hash();
+            println!("Transaction sent with hash: {:?}", tx_hash);
+            Ok(())
         }
     }
 
