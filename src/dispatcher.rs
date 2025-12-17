@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{address::AddressTrait, login::LoginTrait, clear::ClearTrait, transfer::TransferTrait},
+    cmd::{address::AddressTrait, clear::ClearTrait, transfer::TransferTrait},
     wallet::Wallet,
 };
 use clap::{CommandFactory, Parser};
@@ -30,8 +30,7 @@ impl Dispatcher {
             Ok(cmd) => match cmd {
                 Command::Quit => Ok(true),
                 Command::Help => self.help(),
-                Command::Login { seeds } => self.login(seeds),
-                Command::Address => self.print_wallet_address(),
+                Command::Address => self.print_wallet_address().await,
                 Command::Clear => self.clear(),
                 Command::Transfer { token, to, amount } => self.transfer(token, to, amount).await,
             },
@@ -76,13 +75,6 @@ pub enum Command {
     /// Quit the REPL.
     #[command(visible_alias = "q")]
     Quit,
-
-    /// Login to the wallet
-    #[command(visible_alias = "lg")]
-    Login {
-        /// Wallet seeds
-        seeds: String,
-    },
 
     /// Get Address
     #[command(visible_alias = "add")]

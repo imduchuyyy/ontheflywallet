@@ -1,6 +1,6 @@
 use crate::dispatcher::Dispatcher;
 use alloy::{
-    primitives::{Address, U256},
+    primitives::{Address},
     sol,
 };
 use std::str::FromStr;
