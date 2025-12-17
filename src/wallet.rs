@@ -3,7 +3,7 @@ use alloy::{
     network::TransactionBuilder,
     primitives::{Address, U256, eip191_hash_message, utils::parse_units},
     providers::{Provider, ProviderBuilder},
-    rpc::types::{TransactionRequest},
+    rpc::types::TransactionRequest,
     signers::local::PrivateKeySigner,
     sol,
 };
@@ -92,7 +92,7 @@ impl Wallet {
         let decimals = erc20.decimals().call().await?;
         Ok(decimals)
     }
-    
+
     pub async fn transfer_token(
         &self,
         token: Address,

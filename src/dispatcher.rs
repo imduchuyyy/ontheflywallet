@@ -39,10 +39,7 @@ impl Dispatcher {
     }
 
     fn help(&self) -> eyre::Result<bool, String> {
-        println!(
-            "{}",
-            Paint::blue("Available commands:\n")
-        );
+        println!("{}", Paint::blue("Available commands:\n"));
         println!(
             "{}",
             Command::command()

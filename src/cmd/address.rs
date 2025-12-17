@@ -2,7 +2,9 @@ use crate::dispatcher::Dispatcher;
 use yansi::Paint;
 
 pub trait AddressTrait {
-    fn print_wallet_address(&mut self) -> impl std::future::Future<Output = eyre::Result<bool, String>> + Send;
+    fn print_wallet_address(
+        &mut self,
+    ) -> impl std::future::Future<Output = eyre::Result<bool, String>> + Send;
 }
 
 impl AddressTrait for Dispatcher {

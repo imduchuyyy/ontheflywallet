@@ -1,8 +1,5 @@
 use crate::dispatcher::Dispatcher;
-use alloy::{
-    primitives::{Address},
-    sol,
-};
+use alloy::{primitives::Address, sol};
 use std::str::FromStr;
 
 sol!(
@@ -33,7 +30,10 @@ impl TransferTrait for Dispatcher {
             Address::from_str(&token).unwrap()
         };
         let to_address: Address = Address::from_str(&to).unwrap();
-        self.wallet.transfer_token(token_address, to_address, amount).await.map_err(|e| e.to_string())?;
+        self.wallet
+            .transfer_token(token_address, to_address, amount)
+            .await
+            .map_err(|e| e.to_string())?;
 
         Ok(false)
     }
