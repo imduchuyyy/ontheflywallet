@@ -17,7 +17,7 @@ sol!(
     "abi/erc20.json"
 );
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Wallet {
     rpc_url: String,
 }
