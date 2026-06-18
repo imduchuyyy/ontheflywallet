@@ -25,7 +25,7 @@ pub struct Wallet {
 impl Wallet {
     pub fn new() -> Self {
         Wallet {
-            rpc_url: "https://reth-ethereum.ithaca.xyz/rpc".to_string(),
+            rpc_url: "https://1rpc.io/eth".to_string(),
         }
     }
 
